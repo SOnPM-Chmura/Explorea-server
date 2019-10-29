@@ -92,6 +92,8 @@
                     </authentication>
                     <appName>explorea-server</appName>
                     <resourceGroup>sonpn-chmura</resourceGroup>
+                    <appServicePlanName>ASP-explorea-server-a4c0</appServicePlanName>
+                    <pricingTier>F1</pricingTier>
                     <!-- ... -->
                 </configuration>
             </plugin>
