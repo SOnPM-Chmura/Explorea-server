@@ -102,7 +102,7 @@
                     <appSettings>
                         <property>
                             <name>spring.datasource.url</name>
-                            <value>jdbc:postgresql://explorea-postgres-server.postgres.database.azure.com:5432/explorea</value>
+                            <value></value>
                         </property>
                         <property>
                             <name>spring.datasource.username</name>

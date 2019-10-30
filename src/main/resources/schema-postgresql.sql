@@ -15,6 +15,6 @@ CREATE TABLE IF NOT EXISTS routes (
 CREATE TABLE IF NOT EXISTS users (
   id      SERIAL        PRIMARY KEY,
   email    VARCHAR(255),
-  favorite_routs VARCHAR(255),
-  created_routs VARCHAR(255)
+  favorite_routes VARCHAR(255),
+  created_routes VARCHAR(255)
 );
