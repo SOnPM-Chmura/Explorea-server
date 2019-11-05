@@ -14,7 +14,7 @@ public class RatingRepository {
 
     private static final String SQL_FIND_BY_ID = "SELECT * FROM RATINGS WHERE ID = :id";
     private static final String SQL_FIND_ALL = "SELECT * FROM RATINGS";
-    private static final String SQL_INSERT = "INSERT INTO RATINGS (USERID, ROUTEID, VAL) values(:userid, :routeid, :val)";
+    private static final String SQL_INSERT = "INSERT INTO RATINGS (USER_ID, ROUTE_ID, RATING) values(:user_id, :route_id, :rating)";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM RATINGS WHERE ID = :id";
 
     private static final BeanPropertyRowMapper<Rating> ROW_MAPPER = new BeanPropertyRowMapper<>(Rating.class);
@@ -38,9 +38,9 @@ public class RatingRepository {
 
     public int save(Rating rating) {
         final SqlParameterSource paramSource = new MapSqlParameterSource()
-                .addValue("userid", rating.getUserId())
-                .addValue("routeid", rating.getRouteId())
-                .addValue("val", rating.getVal());
+                .addValue("user_id", rating.getUserId())
+                .addValue("route_id", rating.getRouteId())
+                .addValue("rating", rating.getRating());
 
         return jdbcTemplate.update(SQL_INSERT, paramSource);
     }

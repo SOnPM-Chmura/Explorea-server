@@ -14,7 +14,9 @@ public class RouteRepository {
 
     private static final String SQL_FIND_BY_ID = "SELECT * FROM ROUTES WHERE ID = :id";
     private static final String SQL_FIND_ALL = "SELECT * FROM ROUTES";
-    private static final String SQL_INSERT = "INSERT INTO ROUTES (PLACES, LENGTH, AVG_RATING) values(:places, :length, :avg_rating)";
+    private static final String SQL_INSERT = "INSERT INTO ROUTES " +
+            "(coded_route, avg_rating, length_by_foot, length_by_bike, time_by_foot, time_by_bike) " +
+            "values(:coded_route, :avg_rating, :length_by_foot, :length_by_bike, :time_by_foot, :time_by_bike)";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM ROUTES WHERE ID = :id";
 
     private static final BeanPropertyRowMapper<Route> ROW_MAPPER = new BeanPropertyRowMapper<>(Route.class);
@@ -38,9 +40,12 @@ public class RouteRepository {
 
     public int save(Route route) {
         final SqlParameterSource paramSource = new MapSqlParameterSource()
-                .addValue("places", route.getPlacesList())
-                .addValue("length", route.getLength())
-                .addValue("avg_rating", route.getAverageRating());
+                .addValue("coded_route", route.getCodedRoute())
+                .addValue("avg_rating", route.getAverageRating())
+                .addValue("length_by_foot", route.getLengthByFoot())
+                .addValue("length_by_bike", route.getLengthByBike())
+                .addValue("time_by_foot", route.getTimeByFoot())
+                .addValue("time_by_bike", route.getTimeByBike());
 
         return jdbcTemplate.update(SQL_INSERT, paramSource);
     }

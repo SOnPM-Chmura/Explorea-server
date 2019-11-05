@@ -32,6 +32,7 @@ public class RatingController {
         return Optional.ofNullable(ratingRepository.findById(id));
     }
 
+
     @DeleteMapping("/{id}")
     public @ResponseBody String deleteRating(@PathVariable Integer id) {
         ratingRepository.deleteById(id);

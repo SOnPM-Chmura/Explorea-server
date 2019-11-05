@@ -2,12 +2,14 @@ package com.explorea.model;
 
 import org.springframework.data.annotation.Id;
 
+import java.util.Objects;
+
 public class User {
 
-    //@Id
+    @Id
     private Integer id;
 
-    private String email;
+    private String googleUserId;
 
     private String favoriteRoutes;
 
@@ -21,12 +23,12 @@ public class User {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getGoogleUserId() {
+        return googleUserId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setGoogleUserId(String googleUserId) {
+        this.googleUserId = googleUserId;
     }
 
     public String getFavoriteRoutes() {
@@ -49,9 +51,25 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", email='" + email + '\'' +
+                ", googleUserId='" + googleUserId + '\'' +
                 ", favoriteRoutes='" + favoriteRoutes + '\'' +
                 ", createdRoutes='" + createdRoutes + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(googleUserId, user.googleUserId) &&
+                Objects.equals(favoriteRoutes, user.favoriteRoutes) &&
+                Objects.equals(createdRoutes, user.createdRoutes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, googleUserId, favoriteRoutes, createdRoutes);
     }
 }
