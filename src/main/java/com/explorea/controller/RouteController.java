@@ -24,7 +24,12 @@ public class RouteController {
     }
 
     @GetMapping
-    public @ResponseBody Iterable<Route> getAllRoutes() {
+    public @ResponseBody Iterable<Route> getAllRoutes(
+//            @RequestParam("cityname") String city,
+//            @RequestParam("time") Integer time,
+//            @RequestParam("transport") String transport
+    ) {
+
         return routeRepository.findAll();
     }
 

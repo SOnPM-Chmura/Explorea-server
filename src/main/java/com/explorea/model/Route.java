@@ -10,7 +10,7 @@ public class Route {
 
     private String codedRoute;
 
-    private Double averageRating;
+    private Double avgRating;
 
     private Integer lengthByFoot;
 
@@ -19,6 +19,8 @@ public class Route {
     private Integer timeByFoot;
 
     private Integer timeByBike;
+
+    private String city;
 
     public Integer getLengthByFoot() {
         return lengthByFoot;
@@ -68,12 +70,20 @@ public class Route {
         this.codedRoute = codedRoute;
     }
 
-    public Double getAverageRating() {
-        return averageRating;
+    public Double getAvgRating() {
+        return avgRating;
     }
 
-    public void setAverageRating(Double averageRating) {
-        this.averageRating = averageRating;
+    public void setAvgRating(Double avgRating) {
+        this.avgRating = avgRating;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     @Override
@@ -81,11 +91,12 @@ public class Route {
         return "Route{" +
                 "id=" + id +
                 ", codedRoute='" + codedRoute + '\'' +
-                ", averageRating=" + averageRating +
+                ", averageRating=" + avgRating +
                 ", lengthByFoot=" + lengthByFoot +
                 ", lengthByBike=" + lengthByBike +
                 ", timeByFoot=" + timeByFoot +
                 ", timeByBike=" + timeByBike +
+                ", city='" + city + '\'' +
                 '}';
     }
 
@@ -96,15 +107,16 @@ public class Route {
         Route route = (Route) o;
         return Objects.equals(id, route.id) &&
                 Objects.equals(codedRoute, route.codedRoute) &&
-                Objects.equals(averageRating, route.averageRating) &&
+                Objects.equals(avgRating, route.avgRating) &&
                 Objects.equals(lengthByFoot, route.lengthByFoot) &&
                 Objects.equals(lengthByBike, route.lengthByBike) &&
                 Objects.equals(timeByFoot, route.timeByFoot) &&
-                Objects.equals(timeByBike, route.timeByBike);
+                Objects.equals(timeByBike, route.timeByBike) &&
+                Objects.equals(city, route.city);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, codedRoute, averageRating, lengthByFoot, lengthByBike, timeByFoot, timeByBike);
+        return Objects.hash(id, codedRoute, avgRating, lengthByFoot, lengthByBike, timeByFoot, timeByBike, city);
     }
 }

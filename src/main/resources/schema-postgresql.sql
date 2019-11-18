@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS routes (
   length_by_foot INTEGER,
   length_by_bike INTEGER,
   time_by_foot INTEGER,
-  time_by_bike INTEGER
+  time_by_bike INTEGER,
+  city VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS users (
