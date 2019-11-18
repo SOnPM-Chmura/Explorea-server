@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 public class RouteRepository {
 
     private static final String SQL_FIND_BY_ID = "SELECT * FROM ROUTES WHERE ID = :id";
+    private static final String SQL_FIND_BY_CITY = "SELECT * FROM ROUTES WHERE LOWER(CITY) = LOWER(:city)";
     private static final String SQL_FIND_ALL = "SELECT * FROM ROUTES";
     private static final String SQL_INSERT = "INSERT INTO ROUTES " +
             "(coded_route, avg_rating, length_by_foot, length_by_bike, time_by_foot, time_by_bike, city) " +
