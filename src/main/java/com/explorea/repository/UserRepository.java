@@ -14,7 +14,9 @@ public class UserRepository {
 
     private static final String SQL_FIND_BY_ID = "SELECT * FROM USERS WHERE ID = :id";
     private static final String SQL_FIND_ALL = "SELECT * FROM USERS";
-    private static final String SQL_INSERT = "INSERT INTO USERS (google_user_id, favorite_routes, created_routes) values(:google_user_id, :favorite_routes, :created_routes)";
+    private static final String SQL_INSERT = "INSERT INTO USERS (google_user_id, favorite_routes, created_routes) " +
+            "SELECT :google_user_id, :favorite_routes, :created_routes " +
+            "WHERE NOT EXISTS (SELECT 1 FROM USERS WHERE google_user_id=:google_user_id)";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM USERS WHERE ID = :id";
 
     private static final BeanPropertyRowMapper<User> ROW_MAPPER = new BeanPropertyRowMapper<>(User.class);
