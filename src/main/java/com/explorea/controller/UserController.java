@@ -1,5 +1,6 @@
 package com.explorea.controller;
 
+import com.explorea.TokenVerifier;
 import com.explorea.model.User;
 import com.explorea.repository.UserRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -24,15 +26,15 @@ import java.util.Optional;
 public class UserController {
 
     private static final String CLIENT_ID_1 =
-            "";
+            "685250076671-fm3omtp4u6cj7uubb5crutdhlhdtapos.apps.googleusercontent.com";
     private static final String CLIENT_ID_2 =
-            "";
+            "685250076671-b8fa2201uknafpkskc10surqgq3dpqdt.apps.googleusercontent.com";
     private static final String CLIENT_ID_3 =
-            "";
+            "685250076671-9l423p4utl2atj5pq1iqm4p27aemce86.apps.googleusercontent.com";
     private static final String CLIENT_ID_4 =
-            "";
+            "685250076671-v2uk6ii19acgok6n2fa8jmog7uqsfamq.apps.googleusercontent.com";
     private static final String CLIENT_ID_5 =
-            "";
+            "685250076671-ohdnuls4fhg6d9cnkpb4g8p86up9pnki.apps.googleusercontent.com";
 
     @Autowired
     private UserRepository userRepository;
@@ -48,37 +50,25 @@ public class UserController {
     public @ResponseBody
     ResponseEntity createUser(@RequestHeader("authorization") String authString) {
 
-        authString = authString.replace("Bearer ","");
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
-                .setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3, CLIENT_ID_4, CLIENT_ID_5))
-                .build();
-
-        GoogleIdToken idToken = null;
+        String googleUserId = null;
         try {
-            idToken = verifier.verify(authString);
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (IOException e) {
+            googleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if (idToken != null) {
-            GoogleIdToken.Payload payload = idToken.getPayload();
 
-            String userId = payload.getSubject();
-            System.out.println("User ID: " + userId);
-
-            User user = new User();
-            user.setGoogleUserId(userId);
-
-            userRepository.save(user);
-            return new ResponseEntity(HttpStatus.OK);
-
-        } else {
-            System.out.println("Invalid ID token.");
+        if(StringUtils.isEmpty(googleUserId)){
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
+
+        User user = new User();
+
+        user.setGoogleUserId(googleUserId);
+
+        userRepository.save(user);
+        return new ResponseEntity(HttpStatus.OK);
+
     }
 
     @GetMapping
