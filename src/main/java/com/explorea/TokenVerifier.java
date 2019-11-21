@@ -1,10 +1,14 @@
 package com.explorea;
 
-import com.explorea.model.User;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 public class TokenVerifier {
@@ -37,21 +41,30 @@ public class TokenVerifier {
         return verifier;
     }
 
-    public String getGoogleUserId(String tokenString) throws Exception{
+    public VerifiedGoogleUserId getGoogleUserId(String tokenString){
 
         tokenString = tokenString.replace("Bearer ","");
-        GoogleIdToken idToken = googleVerifier.verify(tokenString);
+        GoogleIdToken idToken = null;
+        try {
+            idToken = googleVerifier.verify(tokenString);
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+            return new VerifiedGoogleUserId(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new VerifiedGoogleUserId(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
 
             String userId = payload.getSubject();
 
-            return userId;
-
-        } else {
-            return null;
+            if(!StringUtils.isEmpty(userId)){
+                return new VerifiedGoogleUserId(userId, HttpStatus.OK);
+            }
         }
+        return new VerifiedGoogleUserId(null, HttpStatus.UNAUTHORIZED);
     }
 
 }

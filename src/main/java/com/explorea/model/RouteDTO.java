@@ -4,7 +4,8 @@ import org.springframework.data.annotation.Id;
 
 import java.util.Objects;
 
-public class Route {
+public class RouteDTO {
+
     @Id
     private Integer id;
 
@@ -21,8 +22,6 @@ public class Route {
     private Integer timeByBike;
 
     private String city;
-
-    private Integer creatorId;
 
     public Integer getLengthByFoot() {
         return lengthByFoot;
@@ -88,17 +87,9 @@ public class Route {
         this.city = city;
     }
 
-    public Integer getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(Integer creatorId) {
-        this.creatorId = creatorId;
-    }
-
     @Override
     public String toString() {
-        return "Route{" +
+        return "RouteDTO{" +
                 "id=" + id +
                 ", codedRoute='" + codedRoute + '\'' +
                 ", avgRating=" + avgRating +
@@ -107,7 +98,6 @@ public class Route {
                 ", timeByFoot=" + timeByFoot +
                 ", timeByBike=" + timeByBike +
                 ", city='" + city + '\'' +
-                ", creatorId=" + creatorId +
                 '}';
     }
 
@@ -115,20 +105,19 @@ public class Route {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Route route = (Route) o;
-        return Objects.equals(id, route.id) &&
-                Objects.equals(codedRoute, route.codedRoute) &&
-                Objects.equals(avgRating, route.avgRating) &&
-                Objects.equals(lengthByFoot, route.lengthByFoot) &&
-                Objects.equals(lengthByBike, route.lengthByBike) &&
-                Objects.equals(timeByFoot, route.timeByFoot) &&
-                Objects.equals(timeByBike, route.timeByBike) &&
-                Objects.equals(city, route.city) &&
-                Objects.equals(creatorId, route.creatorId);
+        RouteDTO routeDTO = (RouteDTO) o;
+        return Objects.equals(id, routeDTO.id) &&
+                Objects.equals(codedRoute, routeDTO.codedRoute) &&
+                Objects.equals(avgRating, routeDTO.avgRating) &&
+                Objects.equals(lengthByFoot, routeDTO.lengthByFoot) &&
+                Objects.equals(lengthByBike, routeDTO.lengthByBike) &&
+                Objects.equals(timeByFoot, routeDTO.timeByFoot) &&
+                Objects.equals(timeByBike, routeDTO.timeByBike) &&
+                Objects.equals(city, routeDTO.city);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, codedRoute, avgRating, lengthByFoot, lengthByBike, timeByFoot, timeByBike, city, creatorId);
+        return Objects.hash(id, codedRoute, avgRating, lengthByFoot, lengthByBike, timeByFoot, timeByBike, city);
     }
 }

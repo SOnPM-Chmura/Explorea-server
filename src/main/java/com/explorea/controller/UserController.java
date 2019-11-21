@@ -1,24 +1,15 @@
 package com.explorea.controller;
 
 import com.explorea.TokenVerifier;
+import com.explorea.VerifiedGoogleUserId;
 import com.explorea.model.User;
 import com.explorea.repository.UserRepository;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
 
 @Controller
@@ -50,23 +41,16 @@ public class UserController {
     public @ResponseBody
     ResponseEntity createUser(@RequestHeader("authorization") String authString) {
 
-        String googleUserId = null;
-        try {
-            googleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
-        if(StringUtils.isEmpty(googleUserId)){
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
+            return new ResponseEntity(verifiedGoogleUserId.getHttpStatus());
         }
 
         User user = new User();
-
-        user.setGoogleUserId(googleUserId);
-
+        user.setGoogleUserId(verifiedGoogleUserId.getGoogleUserId());
         userRepository.save(user);
+
         return new ResponseEntity(HttpStatus.OK);
 
     }
