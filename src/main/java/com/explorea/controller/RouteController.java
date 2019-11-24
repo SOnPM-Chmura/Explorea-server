@@ -39,7 +39,7 @@ public class RouteController {
             return new ResponseEntity(HttpStatus.OK);
         }
 
-        return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping
@@ -61,13 +61,22 @@ public class RouteController {
 
     @GetMapping("/{id}")
     public @ResponseBody
-    Optional<Route> getRoute(@PathVariable Integer id) {
+    Optional<RouteDTO> getRoute(@PathVariable Integer id) {
         return Optional.ofNullable(routeRepository.findById(id));
     }
 
     @DeleteMapping("/{id}")
-    public @ResponseBody String deleteRoute(@PathVariable Integer id) {
-        routeRepository.deleteById(id);
-        return "Deleted " + id;
+    public @ResponseBody ResponseEntity deleteRoute(@RequestHeader("authorization") String authString, @PathVariable Integer id) {
+        VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
+
+        if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
+            return new ResponseEntity(verifiedGoogleUserId.getHttpStatus());
+        }
+
+        if(routeRepository.deleteById(id, verifiedGoogleUserId.getGoogleUserId())>0){
+            return new ResponseEntity(HttpStatus.OK);
+        }
+
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 }
