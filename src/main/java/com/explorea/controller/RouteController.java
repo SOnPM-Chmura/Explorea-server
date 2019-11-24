@@ -59,6 +59,18 @@ public class RouteController {
         return foundRoutes;
     }
 
+    @GetMapping("/created")
+    public @ResponseBody Iterable<RouteDTO> getRoutesCreatedByUser(@RequestHeader("authorization") String authString) {
+        VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
+
+        if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
+            return null;
+        }
+
+        Iterable<RouteDTO> foundRoutes = routeRepository.findRoutesCreatedByUser(verifiedGoogleUserId.getGoogleUserId());
+        return foundRoutes;
+    }
+
     @GetMapping("/{id}")
     public @ResponseBody
     Optional<RouteDTO> getRoute(@PathVariable Integer id) {

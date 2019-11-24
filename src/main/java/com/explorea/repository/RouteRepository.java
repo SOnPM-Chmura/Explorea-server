@@ -22,9 +22,11 @@ public class RouteRepository {
             "(SELECT id FROM USERS WHERE google_user_id=:google_user_id))";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM ROUTES WHERE ID = :id " +
             "AND creator_id = (SELECT id FROM USERS WHERE google_user_id=:google_user_id)";
-
+    private static final String SQL_FIND_CREATED_BY = "SELECT id, coded_route, avg_rating, length_by_foot, length_by_bike, time_by_foot, time_by_bike, city FROM ROUTES " +
+            "WHERE creator_id = (SELECT id FROM USERS WHERE google_user_id=:google_user_id)";
     private static final BeanPropertyRowMapper<Route> ROW_MAPPER = new BeanPropertyRowMapper<>(Route.class);
     private static final BeanPropertyRowMapper<RouteDTO> ROW_MAPPER_DTO = new BeanPropertyRowMapper<>(RouteDTO.class);
+
 
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
@@ -62,5 +64,11 @@ public class RouteRepository {
                 .addValue("id", id)
                 .addValue("google_user_id", googleId);
         return jdbcTemplate.update(SQL_DELETE_BY_ID, paramSource);
+    }
+
+    public Iterable<RouteDTO> findRoutesCreatedByUser(String googleId) {
+        final SqlParameterSource paramSource = new MapSqlParameterSource()
+                .addValue("google_user_id", googleId);
+        return jdbcTemplate.query(SQL_FIND_CREATED_BY, paramSource, ROW_MAPPER_DTO);
     }
 }
