@@ -71,6 +71,18 @@ public class RouteController {
         return foundRoutes;
     }
 
+    @GetMapping("/favorite")
+    public @ResponseBody Iterable<RouteDTO> getUsersFavorite(@RequestHeader("authorization") String authString) {
+        VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
+
+        if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
+            return null;
+        }
+
+        Iterable<RouteDTO> foundRoutes = routeRepository.findUsersFavorite(verifiedGoogleUserId.getGoogleUserId());
+        return foundRoutes;
+    }
+
     @GetMapping("/{id}")
     public @ResponseBody
     Optional<RouteDTO> getRoute(@PathVariable Integer id) {

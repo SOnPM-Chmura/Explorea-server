@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RouteRepository {
 
-    private static final String SQL_FIND_BY_ID = "SELECT coded_route, avg_rating, length_by_foot, length_by_bike, time_by_foot, time_by_bike, city FROM ROUTES WHERE ID = :id";
+    private static final String SQL_FIND_BY_ID = "SELECT id, coded_route, avg_rating, length_by_foot, length_by_bike, time_by_foot, time_by_bike, city FROM ROUTES WHERE ID = :id";
     private static final String SQL_FIND_BY_CITY = "SELECT * FROM ROUTES WHERE LOWER(CITY) = LOWER(:city)";
     private static final String SQL_FIND_ALL = "SELECT id, coded_route, avg_rating, length_by_foot, length_by_bike, time_by_foot, time_by_bike, city FROM ROUTES";
     private static final String SQL_INSERT = "INSERT INTO ROUTES " +
@@ -24,6 +24,13 @@ public class RouteRepository {
             "AND creator_id = (SELECT id FROM USERS WHERE google_user_id=:google_user_id)";
     private static final String SQL_FIND_CREATED_BY = "SELECT id, coded_route, avg_rating, length_by_foot, length_by_bike, time_by_foot, time_by_bike, city FROM ROUTES " +
             "WHERE creator_id = (SELECT id FROM USERS WHERE google_user_id=:google_user_id)";
+    private static final String SQL_FIND_FAVORITE = "SELECT routes.id, routes.coded_route, routes.avg_rating, routes.length_by_foot, routes.length_by_bike, routes.time_by_foot, routes.time_by_bike, routes.city " +
+            "FROM ROUTES RIGHT OUTER JOIN RATINGS ON (routes.id = ratings.route_id)" +
+            "WHERE ratings.rating >= 5 AND ratings.user_id = (SELECT id FROM USERS WHERE google_user_id=:google_user_id)";
+    private static final String SQL_UPDATE_AVG_RATING =
+            "UPDATE routes SET avg_rating = (SELECT AVG(rating) FILTER (WHERE route_id = :id) FROM ratings) " +
+            "WHERE ID = :id";
+
     private static final BeanPropertyRowMapper<Route> ROW_MAPPER = new BeanPropertyRowMapper<>(Route.class);
     private static final BeanPropertyRowMapper<RouteDTO> ROW_MAPPER_DTO = new BeanPropertyRowMapper<>(RouteDTO.class);
 
@@ -70,5 +77,17 @@ public class RouteRepository {
         final SqlParameterSource paramSource = new MapSqlParameterSource()
                 .addValue("google_user_id", googleId);
         return jdbcTemplate.query(SQL_FIND_CREATED_BY, paramSource, ROW_MAPPER_DTO);
+    }
+
+    public Iterable<RouteDTO> findUsersFavorite(String googleId) {
+        final SqlParameterSource paramSource = new MapSqlParameterSource()
+                .addValue("google_user_id", googleId);
+        return jdbcTemplate.query(SQL_FIND_FAVORITE, paramSource, ROW_MAPPER_DTO);
+    }
+
+    public int updateAvgRating(Integer id){
+        final SqlParameterSource paramSource = new MapSqlParameterSource()
+                .addValue("id", id);
+        return jdbcTemplate.update(SQL_UPDATE_AVG_RATING, paramSource);
     }
 }
