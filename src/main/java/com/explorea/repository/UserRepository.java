@@ -14,7 +14,9 @@ public class UserRepository {
 
     private static final String SQL_FIND_BY_ID = "SELECT * FROM USERS WHERE ID = :id";
     private static final String SQL_FIND_ALL = "SELECT * FROM USERS";
-    private static final String SQL_INSERT = "INSERT INTO USERS (google_user_id, favorite_routes, created_routes) values(:google_user_id, :favorite_routes, :created_routes)";
+    private static final String SQL_INSERT = "INSERT INTO USERS (google_user_id) " +
+            "SELECT :google_user_id " +
+            "WHERE NOT EXISTS (SELECT 1 FROM USERS WHERE google_user_id=:google_user_id)";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM USERS WHERE ID = :id";
 
     private static final BeanPropertyRowMapper<User> ROW_MAPPER = new BeanPropertyRowMapper<>(User.class);
@@ -38,9 +40,7 @@ public class UserRepository {
 
     public int save(User user) {
         final SqlParameterSource paramSource = new MapSqlParameterSource()
-                .addValue("google_user_id", user.getGoogleUserId())
-                .addValue("favorite_routes", user.getFavoriteRoutes())
-                .addValue("created_routes", user.getCreatedRoutes());
+                .addValue("google_user_id", user.getGoogleUserId());
 
         return jdbcTemplate.update(SQL_INSERT, paramSource);
     }
