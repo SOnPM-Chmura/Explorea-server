@@ -44,26 +44,15 @@ public class RatingController {
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 
-//    @GetMapping
-//    public @ResponseBody Iterable<Rating> getAllRatings() {
-//        return ratingRepository.findAll();
-//    }
-
     @GetMapping()
-    public @ResponseBody Optional<RatingDTO> getRatingByUserAndRoute(@RequestHeader("authorization") String authString,
+    public @ResponseBody ResponseEntity getRatingByUserAndRoute(@RequestHeader("authorization") String authString,
                                                                      @RequestParam(value = "routeId") Integer routeId) {
         VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
         if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
-            return null;
+            return new ResponseEntity(verifiedGoogleUserId.getHttpStatus());
         }
-        return Optional.ofNullable(ratingRepository.findByUserAndRoute(routeId, verifiedGoogleUserId.getGoogleUserId()));
-    }
-
-
-    @DeleteMapping("/{id}")
-    public @ResponseBody String deleteRating(@PathVariable Integer id) {
-        ratingRepository.deleteById(id);
-        return "Deleted " + id;
+        return new ResponseEntity(Optional.ofNullable(ratingRepository.findByUserAndRoute(routeId, verifiedGoogleUserId.getGoogleUserId())),
+                HttpStatus.OK);
     }
 }

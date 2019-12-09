@@ -37,20 +37,4 @@ public class UserController {
         return new ResponseEntity(HttpStatus.OK);
 
     }
-
-    @GetMapping
-    public @ResponseBody Iterable<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public @ResponseBody Optional<User> getUser(@PathVariable Integer id) {
-        return Optional.ofNullable(userRepository.findById(id));
-    }
-
-    @DeleteMapping("/{id}")
-    public @ResponseBody String deleteUser(@PathVariable Integer id) {
-        userRepository.deleteById(id);
-        return "Deleted " + id;
-    }
 }

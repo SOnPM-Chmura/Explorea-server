@@ -43,7 +43,7 @@ public class RouteController {
     }
 
     @GetMapping
-    public @ResponseBody Iterable<RouteDTO> getAllRoutes(
+    public @ResponseBody ResponseEntity getAllRoutes(
             @RequestParam(value = "cityname", required = false) String city,
             @RequestParam(value = "time", required = false) Integer time,
             @RequestParam(value = "transport", required = false) String transport
@@ -56,37 +56,38 @@ public class RouteController {
                                 transport.equalsIgnoreCase("bike") ? p -> p.getTimeByBike() <= time+5 : p -> true))
                 .collect(Collectors.toList());
 
-        return foundRoutes;
+        return new ResponseEntity(foundRoutes, HttpStatus.OK);
     }
 
     @GetMapping("/created")
-    public @ResponseBody Iterable<RouteDTO> getRoutesCreatedByUser(@RequestHeader("authorization") String authString) {
+    public @ResponseBody ResponseEntity getRoutesCreatedByUser(@RequestHeader("authorization") String authString) {
         VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
         if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
-            return null;
+            return new ResponseEntity(verifiedGoogleUserId.getHttpStatus());
         }
 
         Iterable<RouteDTO> foundRoutes = routeRepository.findRoutesCreatedByUser(verifiedGoogleUserId.getGoogleUserId());
-        return foundRoutes;
+        return new ResponseEntity(foundRoutes, HttpStatus.OK);
     }
 
     @GetMapping("/favorite")
-    public @ResponseBody Iterable<RouteDTO> getUsersFavorite(@RequestHeader("authorization") String authString) {
+    public @ResponseBody ResponseEntity getUsersFavorite(@RequestHeader("authorization") String authString) {
         VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
         if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
-            return null;
+            return new ResponseEntity(verifiedGoogleUserId.getHttpStatus());
         }
 
         Iterable<RouteDTO> foundRoutes = routeRepository.findUsersFavorite(verifiedGoogleUserId.getGoogleUserId());
-        return foundRoutes;
+        return new ResponseEntity(foundRoutes, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public @ResponseBody
-    Optional<RouteDTO> getRoute(@PathVariable Integer id) {
-        return Optional.ofNullable(routeRepository.findById(id));
+    ResponseEntity getRoute(@PathVariable Integer id) {
+
+        return new ResponseEntity(Optional.ofNullable(routeRepository.findById(id)), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
