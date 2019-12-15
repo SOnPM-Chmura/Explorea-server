@@ -1,9 +1,11 @@
 package com.explorea.controller;
 
+import com.explorea.EmptyJsonResponse;
 import com.explorea.TokenVerifier;
 import com.explorea.VerifiedGoogleUserId;
 import com.explorea.model.Rating;
 import com.explorea.model.RatingDTO;
+import com.explorea.model.RouteDTO;
 import com.explorea.repository.RatingRepository;
 import com.explorea.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @Controller
@@ -30,18 +33,18 @@ public class RatingController {
         VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
         if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
-            return new ResponseEntity(verifiedGoogleUserId.getHttpStatus());
+            return new ResponseEntity(Collections.singletonMap("response", "ERROR"), verifiedGoogleUserId.getHttpStatus());
         }
 
         if(ratingRepository.save(rating, verifiedGoogleUserId.getGoogleUserId())<=0){
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity(Collections.singletonMap("response", "ERROR"), HttpStatus.UNAUTHORIZED);
         }
 
         if(routeRepository.updateAvgRating(rating.getRouteId())>0){
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(Collections.singletonMap("response", "SUCCESS"), HttpStatus.OK);
         }
 
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(Collections.singletonMap("response", "ERROR"), HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping()
@@ -50,9 +53,16 @@ public class RatingController {
         VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
         if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
-            return new ResponseEntity(verifiedGoogleUserId.getHttpStatus());
+            return new ResponseEntity(new EmptyJsonResponse(), verifiedGoogleUserId.getHttpStatus());
         }
-        return new ResponseEntity(Optional.ofNullable(ratingRepository.findByUserAndRoute(routeId, verifiedGoogleUserId.getGoogleUserId())),
-                HttpStatus.OK);
+
+        RatingDTO rating = ratingRepository.findByUserAndRoute(routeId, verifiedGoogleUserId.getGoogleUserId());
+
+        if(rating==null){
+            return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.OK);
+
+        } else {
+            return new ResponseEntity(rating, HttpStatus.OK);
+        }
     }
 }

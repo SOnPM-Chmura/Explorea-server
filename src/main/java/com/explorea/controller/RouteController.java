@@ -1,5 +1,6 @@
 package com.explorea.controller;
 
+import com.explorea.EmptyJsonResponse;
 import com.explorea.model.RouteDTO;
 import com.explorea.TokenVerifier;
 import com.explorea.VerifiedGoogleUserId;
@@ -12,11 +13,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static java.util.stream.StreamSupport.stream;
 
 @Controller
 @RequestMapping(path="/routes")
@@ -32,14 +34,14 @@ public class RouteController {
         VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
         if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
-            return new ResponseEntity(verifiedGoogleUserId.getHttpStatus());
+            return new ResponseEntity(Collections.singletonMap("response", "ERROR"), verifiedGoogleUserId.getHttpStatus());
         }
 
         if(routeRepository.save(route, verifiedGoogleUserId.getGoogleUserId())>0){
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(Collections.singletonMap("response", "SUCCESS"), HttpStatus.OK);
         }
 
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(Collections.singletonMap("response", "ERROR"), HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping
@@ -86,8 +88,24 @@ public class RouteController {
     @GetMapping("/{id}")
     public @ResponseBody
     ResponseEntity getRoute(@PathVariable Integer id) {
+        RouteDTO route = routeRepository.findById(id);
 
-        return new ResponseEntity(Optional.ofNullable(routeRepository.findById(id)), HttpStatus.OK);
+//        Map<String, Object> response  = new HashMap<>();
+//        if(route==null){
+//            response.put("response", "ERROR");
+//
+//        } else {
+//            response.put("response", "SUCCESS");
+//            response.put("data", route);
+//        }
+
+        if(route==null){
+            return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.OK);
+
+        } else {
+            return new ResponseEntity(route, HttpStatus.OK);
+        }
+
     }
 
     @DeleteMapping("/{id}")
@@ -95,13 +113,13 @@ public class RouteController {
         VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
         if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
-            return new ResponseEntity(verifiedGoogleUserId.getHttpStatus());
+            return new ResponseEntity(Collections.singletonMap("response", "ERROR"), verifiedGoogleUserId.getHttpStatus());
         }
 
         if(routeRepository.deleteById(id, verifiedGoogleUserId.getGoogleUserId())>0){
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(Collections.singletonMap("response", "SUCCESS"), HttpStatus.OK);
         }
 
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(Collections.singletonMap("response", "ERROR"), HttpStatus.UNAUTHORIZED);
     }
 }
