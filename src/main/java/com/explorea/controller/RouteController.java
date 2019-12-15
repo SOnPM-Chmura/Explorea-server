@@ -1,10 +1,12 @@
 package com.explorea.controller;
 
+import com.explorea.ApiDirectionsDAO;
 import com.explorea.EmptyJsonResponse;
 import com.explorea.model.RouteDTO;
 import com.explorea.TokenVerifier;
 import com.explorea.VerifiedGoogleUserId;
 import com.explorea.model.Route;
+import com.explorea.model.SimpleDirectionsRoute;
 import com.explorea.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,10 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -26,6 +26,20 @@ public class RouteController {
 
     @Autowired
     private RouteRepository routeRepository;
+
+    @Autowired
+    private ApiDirectionsDAO apiDirectionsDAO;
+
+    @GetMapping("/directionsApi")
+    public @ResponseBody ResponseEntity createRoute(@PathParam("encodedRoute") String encodedRoute) {
+
+        SimpleDirectionsRoute simpleDirectionsRoute = apiDirectionsDAO.getSimpleDirectionsRoute(encodedRoute);
+
+        if(simpleDirectionsRoute == null){
+            return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity(simpleDirectionsRoute, HttpStatus.OK);
+    }
 
     @PostMapping
     public @ResponseBody
@@ -89,15 +103,6 @@ public class RouteController {
     public @ResponseBody
     ResponseEntity getRoute(@PathVariable Integer id) {
         RouteDTO route = routeRepository.findById(id);
-
-//        Map<String, Object> response  = new HashMap<>();
-//        if(route==null){
-//            response.put("response", "ERROR");
-//
-//        } else {
-//            response.put("response", "SUCCESS");
-//            response.put("data", route);
-//        }
 
         if(route==null){
             return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.OK);

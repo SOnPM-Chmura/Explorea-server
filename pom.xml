@@ -83,6 +83,11 @@
             <artifactId>google-api-client</artifactId>
             <version>1.30.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180130</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -104,7 +109,7 @@
                     <appName>explorea-server</appName>
                     <resourceGroup>explorea-group</resourceGroup>
                     <appServicePlanName>ServicePland5ef7211-9d15-455f</appServicePlanName>
-                    <pricingTier>F1</pricingTier>
+                    <pricingTier>B1</pricingTier>
                     <appSettings>
                         <property>
                             <name>spring.datasource.url</name>
