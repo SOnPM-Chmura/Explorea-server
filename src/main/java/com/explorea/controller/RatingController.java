@@ -1,9 +1,11 @@
 package com.explorea.controller;
 
+import com.explorea.EmptyJsonResponse;
 import com.explorea.TokenVerifier;
 import com.explorea.VerifiedGoogleUserId;
 import com.explorea.model.Rating;
 import com.explorea.model.RatingDTO;
+import com.explorea.model.RouteDTO;
 import com.explorea.repository.RatingRepository;
 import com.explorea.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @Controller
@@ -30,40 +33,36 @@ public class RatingController {
         VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
         if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
-            return new ResponseEntity(verifiedGoogleUserId.getHttpStatus());
+            return new ResponseEntity(Collections.singletonMap("response", "ERROR"), verifiedGoogleUserId.getHttpStatus());
         }
 
         if(ratingRepository.save(rating, verifiedGoogleUserId.getGoogleUserId())<=0){
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity(Collections.singletonMap("response", "ERROR"), HttpStatus.UNAUTHORIZED);
         }
 
         if(routeRepository.updateAvgRating(rating.getRouteId())>0){
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(Collections.singletonMap("response", "SUCCESS"), HttpStatus.OK);
         }
 
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(Collections.singletonMap("response", "ERROR"), HttpStatus.UNAUTHORIZED);
     }
 
-//    @GetMapping
-//    public @ResponseBody Iterable<Rating> getAllRatings() {
-//        return ratingRepository.findAll();
-//    }
-
     @GetMapping()
-    public @ResponseBody Optional<RatingDTO> getRatingByUserAndRoute(@RequestHeader("authorization") String authString,
+    public @ResponseBody ResponseEntity getRatingByUserAndRoute(@RequestHeader("authorization") String authString,
                                                                      @RequestParam(value = "routeId") Integer routeId) {
         VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
         if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
-            return null;
+            return new ResponseEntity(new EmptyJsonResponse(), verifiedGoogleUserId.getHttpStatus());
         }
-        return Optional.ofNullable(ratingRepository.findByUserAndRoute(routeId, verifiedGoogleUserId.getGoogleUserId()));
-    }
 
+        RatingDTO rating = ratingRepository.findByUserAndRoute(routeId, verifiedGoogleUserId.getGoogleUserId());
 
-    @DeleteMapping("/{id}")
-    public @ResponseBody String deleteRating(@PathVariable Integer id) {
-        ratingRepository.deleteById(id);
-        return "Deleted " + id;
+        if(rating==null){
+            return new ResponseEntity(new EmptyJsonResponse(), HttpStatus.OK);
+
+        } else {
+            return new ResponseEntity(rating, HttpStatus.OK);
+        }
     }
 }
