@@ -27,6 +27,11 @@ public class RatingController {
     @Autowired
     private RouteRepository routeRepository;
 
+    @GetMapping("/all")
+    public @ResponseBody ResponseEntity getAllRatings() {
+        return new ResponseEntity(ratingRepository.findAll(), HttpStatus.OK);
+    }
+
     @PostMapping
     public @ResponseBody
     ResponseEntity createRating(@RequestHeader("authorization") String authString, @RequestBody RatingDTO rating) {

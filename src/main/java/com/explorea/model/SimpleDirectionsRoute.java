@@ -71,7 +71,7 @@ public class SimpleDirectionsRoute {
             this.southWest = southWest;
         }
 
-        public LatLngBounds(LatLng northEast, LatLng southWest) {
+        public LatLngBounds(LatLng southWest, LatLng northEast) {
             this.northEast = northEast;
             this.southWest = southWest;
         }

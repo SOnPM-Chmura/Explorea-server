@@ -108,7 +108,7 @@
                     </authentication>
                     <appName>explorea-server</appName>
                     <resourceGroup>explorea-group</resourceGroup>
-                    <appServicePlanName>ServicePland5ef7211-9d15-455f</appServicePlanName>
+                    <appServicePlanName>ServicePlan7f6b96e9-a416-49c8</appServicePlanName>
                     <pricingTier>B1</pricingTier>
                     <appSettings>
                         <property>

@@ -60,7 +60,7 @@ public class RouteController {
 
     @GetMapping
     public @ResponseBody ResponseEntity getAllRoutes(
-            @RequestParam(value = "cityname", required = false) String city,
+            @RequestParam(value = "city", required = false) String city,
             @RequestParam(value = "time", required = false) Integer time,
             @RequestParam(value = "transport", required = false) String transport
     ) {

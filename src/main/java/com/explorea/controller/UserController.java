@@ -21,6 +21,11 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @GetMapping
+    public @ResponseBody ResponseEntity getAllUsers() {
+        return new ResponseEntity(userRepository.findAll(), HttpStatus.OK);
+    }
+
     @PostMapping
     public @ResponseBody
     ResponseEntity createUser(@RequestHeader("authorization") String authString) {
