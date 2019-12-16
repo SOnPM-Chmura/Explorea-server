@@ -20,7 +20,7 @@ import java.util.TimeZone;
 @Component
 public class ApiDirectionsDAO {
 
-    private final String API_KEY = "AIzaSyDBUNLa3AB5V9c6nodisBworJAA-k7XDJM";
+    private final String API_KEY = "";
 
     public SimpleDirectionsRoute getSimpleDirectionsRoute(String encodedRoute) {
         encodedRoute = PolyUtilSimple.hexDecode(encodedRoute);
