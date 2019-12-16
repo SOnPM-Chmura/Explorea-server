@@ -14,6 +14,7 @@ public class SimpleDirectionsRoute {
     int timeFoot;
     int timeBike;
     LatLngBounds bounds;
+    String city;
 
     public SimpleDirectionsRoute(String encodedRoute,
                                  long queryTime,
@@ -23,7 +24,8 @@ public class SimpleDirectionsRoute {
                                  int distanceBike,
                                  int timeFoot,
                                  int timeBike,
-                                 LatLngBounds bounds) {
+                                 LatLngBounds bounds,
+                                 String city) {
         this.encodedRoute = encodedRoute;
         this.queryTime = queryTime;
         this.encodedDirectionsFoot = encodedDirectionsFoot;
@@ -33,6 +35,7 @@ public class SimpleDirectionsRoute {
         this.timeFoot = timeFoot;
         this.timeBike = timeBike;
         this.bounds = bounds;
+        this.city = city;
     }
 
     @Override
@@ -46,7 +49,8 @@ public class SimpleDirectionsRoute {
                 "\"distanceBike\": " + distanceBike + ",\n" +
                 "\"timeFoot\": " + timeFoot + ",\n" +
                 "\"timeBike\": " + timeBike + ",\n" +
-                "\"bounds\": " + bounds.toString() + "\n}";
+                "\"bounds\": " + bounds.toString() + ",\n" +
+                "\"city\": \"" + city + "\"}";
 
     }
 
@@ -191,4 +195,8 @@ public class SimpleDirectionsRoute {
     public void setBounds(LatLngBounds bounds) {
         this.bounds = bounds;
     }
+
+    public String getCity() { return city; }
+
+    public void setCity(String city) { this.city = city; }
 }
