@@ -64,15 +64,28 @@ public class RouteController {
             @RequestParam(value = "time", required = false) Integer time,
             @RequestParam(value = "transport", required = false) String transport
     ) {
+
         Iterable<RouteDTO> foundRoutes = routeRepository.findAll();
         foundRoutes = StreamSupport.stream(foundRoutes.spliterator(), false)
                 .filter(StringUtils.isEmpty(city) ? p -> true : p -> city.equalsIgnoreCase(p.getCity()))
                 .filter((StringUtils.isEmpty(transport) || time == null) ? p -> true :
-                        (transport.equalsIgnoreCase("foot") ? p -> p.getTimeByFoot() <= time+5 :
-                                transport.equalsIgnoreCase("bike") ? p -> p.getTimeByBike() <= time+5 : p -> true))
+                        (transport.equalsIgnoreCase("foot") ? p -> isTimeAround(time, p.getTimeByFoot()) :
+                                transport.equalsIgnoreCase("bike") ? p -> isTimeAround(time, p.getTimeByBike()) : p -> true))
                 .collect(Collectors.toList());
 
         return new ResponseEntity(foundRoutes, HttpStatus.OK);
+    }
+
+    private boolean isTimeAround(Integer t, Integer routeTime) {
+        if(t.compareTo(15)==0){
+            return (routeTime <= 20);
+        } else if (t.compareTo(30)==0){
+            return (routeTime > 20 && routeTime <= 40);
+        } else if (t.compareTo(60)==0){
+            return (routeTime > 40 && routeTime <= 70);
+        } else if (t.compareTo(90)==0){
+            return (routeTime > 70);
+        } else return (routeTime < t+5);
     }
 
     @GetMapping("/created")
