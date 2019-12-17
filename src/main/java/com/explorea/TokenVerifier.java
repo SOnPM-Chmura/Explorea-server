@@ -23,6 +23,9 @@ public class TokenVerifier {
             "";
     private static final String CLIENT_ID_5 =
             "";
+    private static final String CLIENT_ID_6 =
+            "";
+
 
     private static TokenVerifier verifier;
 
@@ -30,7 +33,7 @@ public class TokenVerifier {
 
     private TokenVerifier() {
         googleVerifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
-                .setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3, CLIENT_ID_4, CLIENT_ID_5))
+                .setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3, CLIENT_ID_4, CLIENT_ID_5, CLIENT_ID_6))
                 .build();
     }
 

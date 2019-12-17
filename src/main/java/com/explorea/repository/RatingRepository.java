@@ -8,7 +8,10 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class RatingRepository {
@@ -24,6 +27,9 @@ public class RatingRepository {
     private static final String SQL_FIND_BY_ROUTE_AND_USER = "SELECT route_id, rating FROM RATINGS " +
             "WHERE user_id = (SELECT id FROM USERS WHERE google_user_id=:google_user_id) " +
             "AND route_id = :route_id";
+    private static final String SQL_UPDATE_AVG_RATING =
+            "UPDATE routes SET avg_rating = (SELECT AVG(rating) FILTER (WHERE route_id = :id) FROM ratings) " +
+                    "WHERE ID = :id";
 
     private static final BeanPropertyRowMapper<Rating> ROW_MAPPER = new BeanPropertyRowMapper<>(Rating.class);
     private static final BeanPropertyRowMapper<RatingDTO> ROW_MAPPER_DTO = new BeanPropertyRowMapper<>(RatingDTO.class);
@@ -70,5 +76,25 @@ public class RatingRepository {
         catch (EmptyResultDataAccessException ex) {
             return null;
         }
+    }
+
+    @Transactional
+    public int saveAndUpdateAvgRating(RatingDTO rating, String googleId){
+
+        final SqlParameterSource paramSource = new MapSqlParameterSource()
+                .addValue("user_id", googleId)
+                .addValue("route_id", rating.getRouteId())
+                .addValue("rating", rating.getRating());
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        if(jdbcTemplate.update(SQL_INSERT, paramSource, keyHolder)<=0){
+            return -1;
+        }
+
+        final SqlParameterSource paramSource2 = new MapSqlParameterSource()
+                .addValue("id", rating.getRouteId());
+        jdbcTemplate.update(SQL_UPDATE_AVG_RATING, paramSource2);
+
+        return (int) keyHolder.getKeys().get("id");
     }
 }

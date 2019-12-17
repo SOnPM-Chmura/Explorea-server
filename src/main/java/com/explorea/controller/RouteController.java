@@ -31,7 +31,7 @@ public class RouteController {
     private ApiDirectionsDAO apiDirectionsDAO;
 
     @GetMapping("/directionsApi")
-    public @ResponseBody ResponseEntity createRoute(@PathParam("encodedRoute") String encodedRoute) {
+    public @ResponseBody ResponseEntity directions(@PathParam("encodedRoute") String encodedRoute) {
 
         SimpleDirectionsRoute simpleDirectionsRoute = apiDirectionsDAO.getSimpleDirectionsRoute(encodedRoute);
 
@@ -48,14 +48,14 @@ public class RouteController {
         VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
         if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
-            return new ResponseEntity(Collections.singletonMap("response", "ERROR"), verifiedGoogleUserId.getHttpStatus());
+            return new ResponseEntity(Collections.singletonMap("id", -1), verifiedGoogleUserId.getHttpStatus());
         }
 
-        if(routeRepository.save(route, verifiedGoogleUserId.getGoogleUserId())>0){
-            return new ResponseEntity(Collections.singletonMap("response", "SUCCESS"), HttpStatus.OK);
+        Integer id = routeRepository.save(route, verifiedGoogleUserId.getGoogleUserId());
+        if(id>0){
+            return new ResponseEntity(Collections.singletonMap("id", id), HttpStatus.OK);
         }
-
-        return new ResponseEntity(Collections.singletonMap("response", "ERROR"), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(Collections.singletonMap("id", id), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping
