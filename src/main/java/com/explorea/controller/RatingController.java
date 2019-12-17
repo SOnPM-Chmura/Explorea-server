@@ -38,18 +38,16 @@ public class RatingController {
         VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
         if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
-            return new ResponseEntity(Collections.singletonMap("response", "ERROR"), verifiedGoogleUserId.getHttpStatus());
+            return new ResponseEntity(Collections.singletonMap("id", -1), verifiedGoogleUserId.getHttpStatus());
         }
 
-        if(ratingRepository.save(rating, verifiedGoogleUserId.getGoogleUserId())<=0){
-            return new ResponseEntity(Collections.singletonMap("response", "ERROR"), HttpStatus.UNAUTHORIZED);
+        Integer id = ratingRepository.saveAndUpdateAvgRating(rating, verifiedGoogleUserId.getGoogleUserId());
+
+        if(id<=0){
+            return new ResponseEntity(Collections.singletonMap("id", id), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if(routeRepository.updateAvgRating(rating.getRouteId())>0){
-            return new ResponseEntity(Collections.singletonMap("response", "SUCCESS"), HttpStatus.OK);
-        }
-
-        return new ResponseEntity(Collections.singletonMap("response", "ERROR"), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(Collections.singletonMap("id", id), HttpStatus.OK);
     }
 
     @GetMapping()

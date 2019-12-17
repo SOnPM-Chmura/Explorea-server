@@ -33,14 +33,16 @@ public class UserController {
         VerifiedGoogleUserId verifiedGoogleUserId = TokenVerifier.getInstance().getGoogleUserId(authString);
 
         if(verifiedGoogleUserId.getHttpStatus() != HttpStatus.OK){
-            return new ResponseEntity(Collections.singletonMap("response", "ERROR"), verifiedGoogleUserId.getHttpStatus());
+            return new ResponseEntity(Collections.singletonMap("id", "-1"), verifiedGoogleUserId.getHttpStatus());
         }
 
         User user = new User();
         user.setGoogleUserId(verifiedGoogleUserId.getGoogleUserId());
-        userRepository.save(user);
 
-        return new ResponseEntity(Collections.singletonMap("response", "SUCCESS"), HttpStatus.OK);
-
+        Integer id = userRepository.save(user);
+        if(id>0){
+            return new ResponseEntity(Collections.singletonMap("id", id), HttpStatus.OK);
+        }
+        return new ResponseEntity(Collections.singletonMap("id", id), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
