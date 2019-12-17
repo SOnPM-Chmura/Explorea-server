@@ -6,21 +6,28 @@
 
 
 * get all routes:
+
 `GET https://explorea-server.azurewebsites.net/routes`
 
 
 
 * or filtered routes:
+
 `GET https://explorea-server.azurewebsites.net/routes?city=CITY&time=CZAS&transport=TRANSPORT`
 
 CITY - string nazwa miasta
+
 CZAS - int czas w minutach
+
 TRANSPORT - string “foot” albo “bike”
 
 (żeby przefiltrowało po czasie muszą być oba parametry czas i transport, jeśli nie ma jednego z nich, albo jest w złym formacie to zapytanie zwraca wszystkie rekordy bez filtrowania )
 
+
 Response:
+
 Http Status Code 200
+
 ```
 [
    {
@@ -49,12 +56,15 @@ Http Status Code 200
 
 
 * get route with given id:
+
 `GET https://explorea-server.azurewebsites.net/routes/ID`
 
 ID - int 
 
 Response:
+
 Http Status Code 200
+
 ```
 {
    "id": 1,
@@ -71,10 +81,13 @@ Http Status Code 200
 
 
 * add route 
+
 `POST https://explorea-server.azurewebsites.net/routes`
+
 Header: authentication -  string “Bearer <token>”
 
 Body:
+
 ```
 {
     "codedRoute":"7366737d487b727c7e427665416f6343746f43727140",
@@ -86,8 +99,11 @@ Body:
 }
 ```
 Response:
+
 Http Status Code 200
+
 Body:
+
 ```
 {
     "id": 7
@@ -97,11 +113,15 @@ Body:
 
 
 * get routes created by user:
+
 `GET https://explorea-server.azurewebsites.net/routes/created`
+
 Header: authentication -  string “Bearer <token>”
 
 Response:
+
 Http Status Code 200
+
 ```
 [
    {
@@ -132,9 +152,11 @@ Http Status Code 200
 * get user’s favorite routes:
 
 `GET https://explorea-server.azurewebsites.net/routes/favorite`
+
 Header: authentication -  string “Bearer <token>”
  
  Response:
+ 
  jak dla /routes/created
 
 
@@ -143,12 +165,17 @@ Header: authentication -  string “Bearer <token>”
 
 
 * add user
+
 `POST https://explorea-server.azurewebsites.net/users`
+
 Header: authentication -  string “Bearer <token>”
 
 Response: 
+
 Http Status Code 200
+
 Body:
+
 ```
 {
     "id": 7
@@ -161,9 +188,13 @@ Body:
 
 
 * add rating:
+
 `POST https://explorea-server.azurewebsites.net/ratings`
+
 Header: authentication -  string “Bearer <token>”
+   
 Body:
+
 ```
 {
     "routeId":1,
@@ -171,8 +202,11 @@ Body:
 }
 ```
 Response:
+
 Http Status Code 200
+
 Body:
+
 ```
 {
     "id": 7
@@ -182,12 +216,17 @@ Body:
 
 
 * get user’s rating for given route:
+
 `GET https://explorea-server.azurewebsites.net/ratings?routeId=ROUTEID`
+
 ROUTEID - int
+
 Header: authentication -  string “Bearer <token>”
 
 Response:
+
 Http Status Code 200
+
 ```
 {
     "routeId":1,
@@ -198,12 +237,15 @@ Http Status Code 200
 
 
 # Directions Api:
+
 `GET https://explorea-server.azurewebsites.net/routes/directionsApi?encodedRoute=ENCODED-ROUTE`
 
 ENCODED-ROUTE - trasa zakodowana w hex
 
 Response:
+
 Http Status Code 200
+
 ```
 {
     "encodedRoute": "5f736470485f676179425f7460423f3f5f7460427e7360423f",
