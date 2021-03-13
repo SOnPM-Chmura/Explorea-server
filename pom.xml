@@ -113,15 +113,15 @@
                     <appSettings>
                         <property>
                             <name>spring.datasource.url</name>
-                            <value></value>
+                            <value>jdbc:postgresql://explorea-server-postgres.postgres.database.azure.com:5432/explorea?user=exploreaadmin@explorea-server-postgres&amp;password=Admin1234&amp;sslmode=require</value>
                         </property>
                         <property>
                             <name>spring.datasource.username</name>
-                            <value></value>
+                            <value>exploreaadmin@explorea-server-postgres</value>
                         </property>
                         <property>
                             <name>spring.datasource.password</name>
-                            <value></value>
+                            <value>Admin1234</value>
                         </property>
                     </appSettings>
                     <!-- ... -->

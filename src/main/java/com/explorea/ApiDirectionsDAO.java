@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Component
 public class ApiDirectionsDAO {
 
-    private final String API_KEY = "";
+    private final String API_KEY = "AIzaSyAc5ZQx51o5zv3iQvOwS6hgzE7ltNALxtY";
 
     public SimpleDirectionsRoute getSimpleDirectionsRoute(String encodedRoute) {
         encodedRoute = PolyUtilSimple.hexDecode(encodedRoute);

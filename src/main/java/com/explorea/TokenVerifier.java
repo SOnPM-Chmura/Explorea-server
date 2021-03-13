@@ -14,17 +14,17 @@ import java.util.Arrays;
 public class TokenVerifier {
 
     private static final String CLIENT_ID_1 =
-            "";
+            "685250076671-fm3omtp4u6cj7uubb5crutdhlhdtapos.apps.googleusercontent.com";
     private static final String CLIENT_ID_2 =
-            "";
+            "685250076671-b8fa2201uknafpkskc10surqgq3dpqdt.apps.googleusercontent.com";
     private static final String CLIENT_ID_3 =
-            "";
+            "685250076671-9l423p4utl2atj5pq1iqm4p27aemce86.apps.googleusercontent.com";
     private static final String CLIENT_ID_4 =
-            "";
+            "685250076671-v2uk6ii19acgok6n2fa8jmog7uqsfamq.apps.googleusercontent.com";
     private static final String CLIENT_ID_5 =
-            "";
+            "685250076671-ohdnuls4fhg6d9cnkpb4g8p86up9pnki.apps.googleusercontent.com";
     private static final String CLIENT_ID_6 =
-            "";
+            "685250076671-2mdvg5jc0lccq9chd5okl8et5art1voc.apps.googleusercontent.com";
 
 
     private static TokenVerifier verifier;
